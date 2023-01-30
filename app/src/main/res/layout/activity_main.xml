@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E0F7FA"
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:id="@+id/layout_action"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:text="SSAI EXAMPLE"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+
+        <Button
+            android:id="@+id/bt_ssai"
+            android:layout_width="300dp"
+            android:layout_height="70dp"
+            android:layout_below="@id/name"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="70dp"
+            android:backgroundTint="#00897B"
+            android:text="Example with url ssai" />
+
+
+        <Button
+            android:id="@+id/bt_url_tracking"
+            android:layout_width="300dp"
+            android:layout_height="70dp"
+            android:layout_below="@id/bt_ssai"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:backgroundTint="#00897B"
+            android:text="Example with url source and url tracking" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_edt"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/edt_source"
+            android:layout_width="300dp"
+            android:layout_height="70dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="200dp"
+            android:hint="Url source" />
+
+        <EditText
+            android:id="@+id/edt_tracking"
+            android:layout_width="300dp"
+            android:layout_height="70dp"
+            android:layout_below="@id/edt_source"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:hint="Url Tracking" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_edt_ssai"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/edt_saai"
+            android:layout_width="300dp"
+            android:layout_height="70dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="200dp"
+            android:hint="Url SSAI" />
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/bt_enter"
+        android:layout_width="200dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="70dp"
+        android:backgroundTint="#00897B"
+        android:text="Enter"
+        android:visibility="gone" />
+
+
+</RelativeLayout>
