@@ -1,64 +1,89 @@
 package com.tdm.sigmaexossaiexample;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.util.Log;
 
-public class MainActivity extends AppCompatActivity {
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.source.DefaultMediaSourceFactory;
+import com.google.android.exoplayer2.ui.StyledPlayerView;
+import com.tdm.adstracking.AdsTracking;
+//import com.tdm.adstracking.AdsTracking;
+import com.tdm.adstracking.FullLog;
+import com.tdm.adstracking.core.listener.ResponseInitListener;
 
-    private RelativeLayout layoutAction;
-    private RelativeLayout layoutInput;
-    private Button btSSAI;
-    private Button btUrlTracking;
-    public static int EX_SSAI_LINK = 1;
-    public static int EX_SOURCE_LINK = 2;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+
+public class MainActivity extends AppCompatActivity implements  Player.Listener {
+    ExoPlayer exoPlayer;
+    StyledPlayerView playerView;
+
+    public String SESSION_URL =
+            "https://ssai-stream-dev.sigmaott.com/manifest/manipulation/session/bea37c7f-bea6-4fc4-8a49-6a2dc385f2b8/origin04/scte35-av4s-clear/master.m3u8";
 
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initView();
-        action();
-    }
 
+        playerView = findViewById(R.id.player_view_id);
 
-    private void initView() {
-        layoutAction = findViewById(R.id.layout_action);
-        layoutInput = findViewById(R.id.layout_edt);
-        btSSAI = findViewById(R.id.bt_ssai);
-        btUrlTracking = findViewById(R.id.bt_url_tracking);
-        btSSAI.setNextFocusDownId(R.id.bt_url_tracking);
-        btUrlTracking.setNextFocusUpId(R.id.bt_ssai);
-        btSSAI.requestFocus();
-    }
-
-    private void action() {
-        btSSAI.setOnClickListener(new View.OnClickListener() {
+        Activity mainActivity = this;
+        //
+        playerView.post(new Runnable() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, PlayActivity.class);
-                intent.putExtra("type", EX_SSAI_LINK);
-                intent.putExtra("url_ssai","https://ssai-stream-dev.sigmaott.com/manifest/manipulation/session/79799fec-88b3-4a11-b323-1c0b8113370e/origin04/scte35-av/master.m3u8");
-                startActivity(intent);
+            public void run() {
+                // In ra kích thước
+                AdsTracking.getInstance().init(
+                        mainActivity,
+                        playerView,
+                        SESSION_URL,
+                        new ResponseInitListener() {
+                            @Override
+                            public void onInitSuccess(String url) {
+                                configPlayer(url);
+                            }
+                            @Override
+                            public void onInitFailed(String url, int code, String msg) {
+                                Log.d("onInitFailed:", + code + ':' + msg);
+                            }
+                        });
             }
         });
-        btUrlTracking.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, PlayActivity.class);
-                intent.putExtra("type", EX_SOURCE_LINK);
-                intent.putExtra("url_source","");
-                intent.putExtra("url_tracking","");
-//                startActivity(intent);
-                Toast.makeText(MainActivity.this,"urlSource, urlTracking is empty!",Toast.LENGTH_LONG).show();
-            }
-        });
+    }
+
+    private void configPlayer(String url) {
+        exoPlayer = new ExoPlayer.Builder(this)
+                .setMediaSourceFactory(new DefaultMediaSourceFactory(this).setLiveTargetOffsetMs(5000))
+                .build();
+        MediaItem mediaItem =
+                new MediaItem.Builder()
+                        .setUri(url)
+                        .setLiveConfiguration(new MediaItem.LiveConfiguration.Builder().build())
+                        .build();
+        exoPlayer.setMediaItem(mediaItem);
+        exoPlayer.prepare();
+        exoPlayer.setPlayWhenReady(false);
+        playerView.setPlayer(exoPlayer);
+
+        AdsTracking.getInstance().initPlayerView(exoPlayer, url);
+    }
+    @SuppressLint("SetTextI18n")
+
+    @Override
+    protected void onDestroy() {
+        AdsTracking.getInstance().destroy();
+        super.onDestroy();
     }
 }
