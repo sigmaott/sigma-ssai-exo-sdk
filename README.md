@@ -56,6 +56,8 @@ After initializing the session in the SDK, the SDK returns a SourceUrl --> confi
 
 ##### Step 2: After init sdk, config Player (funtion configPlayer())
 
+call configPlayer after init exoplayer
+
         `````
         AdsTracking.getInstance().initPlayerView(exoPlayer, url);
 
