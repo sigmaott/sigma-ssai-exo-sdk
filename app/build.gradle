@@ -56,5 +56,5 @@ dependencies {
     implementation 'com.google.android.exoplayer:extension-ima:2.18.2'
     implementation 'com.google.code.gson:gson:2.8.7'
 
-    implementation 'com.sigma.ssai:sigma-ssai-exo:1.0.0'
+    implementation 'com.sigma.ssai:sigma-ssai-exo:1.0.1'
 }

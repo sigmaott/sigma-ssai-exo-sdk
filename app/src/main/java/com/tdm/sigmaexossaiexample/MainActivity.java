@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements  Player.Listener 
         exoPlayer.setPlayWhenReady(false);
         playerView.setPlayer(exoPlayer);
 
-        AdsTracking.getInstance().initPlayerView(exoPlayer, url);
+        AdsTracking.getInstance().initPlayerView(exoPlayer);
     }
     @SuppressLint("SetTextI18n")
 

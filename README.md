@@ -36,13 +36,12 @@ init sdk in onCreate of Activity
                         new ResponseInitListener() {
                             @Override
                             public void onInitSuccess(String url) {
-                                FullLog.d("AdsTracking=>>onInitSuccess" + url);
                                 configPlayer();
                             }
                             @Override
                             public void onInitFailed(String url, int code, String msg) {
-                                FullLog.d("AdsTracking=>>onInitFailed" + code + ':' + url);
-                                FullLog.d("AdsTracking=>>onInitFailed_msg:" + msg);
+                                Log.d("onInitFailed:", + code + ':' + msg);
+
                             }
                         });
 ```
@@ -59,7 +58,7 @@ After initializing the session in the SDK, the SDK returns a SourceUrl --> confi
 call configPlayer after init exoplayer
 
         `````
-        AdsTracking.getInstance().initPlayerView(exoPlayer, url);
+        AdsTracking.getInstance().initPlayerView(exoPlayer);
 
 ##### Note:
 
