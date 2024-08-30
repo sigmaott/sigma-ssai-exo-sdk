@@ -1,5 +1,6 @@
 # sigma-ssai-exo-sdk
-### Requirement 
+
+### Requirement
 
 ```
 minSdk 21
@@ -7,116 +8,59 @@ minSdk 21
 
 ### Import SDK
 
-Download [sigma-dai-exo-ssai-sdk](https://github.com/truongnguyen1804/sigma-ssai-exo-sdk/blob/main/sigma-dai-exo-ssai/sigma-dai-exo-ssai.aar) to your project and configure it as a library.
+In rootProject/build.gradle add:
+
+```
+google()
+mavenCentral()
+maven {
+url "https://maven.sigma.video"
+}
+
+In rootProject/app/build.gradle add:
+```
+
+implementation 'com.sigma.ssai:sigma-ssai-exo:1.0.0'
 
 #### Example
 
-##### Step 1:
+##### Step 1:Initialize SDK
 
-There are two ways to install the sdk:
+init sdk in onCreate of Activity
 
-###### Option 1: Initialize session in SDK (Init session)
+```
+ AdsTracking.getInstance().init(
+                        mainActivity,
+                        playerView,
+                        SESSION_URL,
+                        new ResponseInitListener() {
+                            @Override
+                            public void onInitSuccess(String url) {
+                                configPlayer();
+                            }
+                            @Override
+                            public void onInitFailed(String url, int code, String msg) {
+                                Log.d("onInitFailed:", + code + ':' + msg);
+
+                            }
+                        });
+```
+
+With:
+SESSION_URL: link sesssion(to get link video and link tracking)
+playerView: player View
+mainActivity: current activity
 
 After initializing the session in the SDK, the SDK returns a SourceUrl --> configPlayer(url)
 
-```
-AdsTracking.getInstance().initSession(urlSSAI, new AdsTracking.InitSessionListener() {
-            @Override
-            public void onResponse(int code, String url) {
-                PlayActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        configPlayer(url);
-                    }
-                });
-            }
-            @Override
-            public void onError(int code) {
-                Log.e(TAG, "Code " + code);
-            }
+##### Step 2: After init sdk, config Player (funtion configPlayer())
 
-        });
-```
+call configPlayer after init exoplayer
 
-###### Option 2: SourceUrl and TrackingUrl are available
-
-```
-AdsTracking.getInstance().setUrlTracking(urlTracking);
-configPlayer(urlSource);
-```
-
-
-
-##### Step 2:
-
-###### Provide SDK timing from player via AdsTracking.TrackingParams
-
-Initialize an AdsTracking.TrackingParams trackingParams interface:
-
-```
-trackingParams = new AdsTracking.TrackingParams() {
-    @Override
-    public long onTimeUpdate() {
-        if (exoPlayer != null) {
-            if (exoPlayer.isPlayingAd())
-                return -1;
-            if (exoPlayer.isCurrentMediaItemDynamic()) {
-                // live
-                if (windowLive == null) {
-                    windowLive = new Timeline.Window();
-                }
-                if (periodLive == null) {
-                    periodLive = new Timeline.Period();
-                }
-                if (!exoPlayer.getCurrentTimeline().isEmpty()) {
-                    long positionInPeriod = exoPlayer.getCurrentPosition(); // in period
-                    long position = positionInPeriod;
-                    Timeline.Period p = exoPlayer.getCurrentTimeline().getPeriod(exoPlayer.getCurrentPeriodIndex(), periodLive);
-                    long positionInWindows = p.getPositionInWindowMs();
-                    position -= positionInWindows;
-                    return position;
-                }
-            } else {
-                // vod
-                long position = exoPlayer.getCurrentPosition();
-                return position;
-            }
-        }
-        return -1;
-    }
-};
-```
-
-Where `onTimeUpdate()` needs to return the player's time
-
-##### Step 3: 
-
-Listen to player's ready to play event
-
-```
-@Override
-public void onPlaybackStateChanged(int playbackState) {
-    if (playbackState == ExoPlayer.STATE_READY) {
-        AdsTracking.getInstance().startTracking();
-    }
-
-}
-```
-
-Start tracking by calling `AdsTracking.getInstance().startTracking()` when the player's playback event is ready.
-
-
+        `````
+        AdsTracking.getInstance().initPlayerView(exoPlayer);
 
 ##### Note:
-
-Call `stopTracking()` when the player has an error
-
-```
-@Override
-public void onPlayerError(PlaybackException error) {
-    AdsTracking.getInstance().stopTracking();
-}
-```
 
 Call `destroy()` when the activity is destroyed
 

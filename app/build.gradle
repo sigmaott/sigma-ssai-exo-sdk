@@ -1,3 +1,12 @@
+
+//buildscript {
+//    repositories {
+//        maven {
+//            url "https://maven.sigma.video"
+//        }
+//    }
+//}
+
 plugins {
     id 'com.android.application'
 }
@@ -27,8 +36,8 @@ android {
     }
 }
 
-dependencies {
 
+dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.0'
     implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -36,7 +45,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-    implementation project(':sigma-dai-exo-ssai')
+//    implementation project(':sigma-dai-exo-ssai')
 
     def lifecycle_version = "2.4.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
@@ -47,4 +56,5 @@ dependencies {
     implementation 'com.google.android.exoplayer:extension-ima:2.18.2'
     implementation 'com.google.code.gson:gson:2.8.7'
 
+    implementation 'com.sigma.ssai:sigma-ssai-exo:1.0.1'
 }
