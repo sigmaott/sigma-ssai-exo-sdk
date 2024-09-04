@@ -1,34 +1,34 @@
 # sigma-ssai-exo-sdk
 
-### Requirement
+## Requiremen
 
-```
 minSdk 21
-```
 
-### Import SDK
+## Import SDK
 
 In rootProject/build.gradle add:
 
-```
+```java
 google()
 mavenCentral()
 maven {
-url "https://maven.sigma.video"
+    url "https://maven.sigma.video"
 }
-
-In rootProject/app/build.gradle add:
 ```
 
+In rootProject/app/build.gradle add:
+
+````java
 implementation 'com.sigma.ssai:sigma-ssai-exo:1.0.0'
+````
 
-#### Example
+## Example
 
-##### Step 1:Initialize SDK
+### Step 1:Initialize SDK
 
 init sdk in onCreate of Activity
 
-```
+```java
  AdsTracking.getInstance().init(
                         mainActivity,
                         playerView,
@@ -46,25 +46,22 @@ init sdk in onCreate of Activity
                         });
 ```
 
-With:
 SESSION_URL: link sesssion(to get link video and link tracking)
 playerView: player View
 mainActivity: current activity
 
 After initializing the session in the SDK, the SDK returns a SourceUrl --> configPlayer(url)
 
-##### Step 2: After init sdk, config Player (funtion configPlayer())
+#### Step 2: After init sdk, config Player (funtion configPlayer())
 
-call configPlayer after init exoplayer
-
-        `````
+call configPlayer after init exoplayer:
         AdsTracking.getInstance().initPlayerView(exoPlayer);
 
-##### Note:
+##### Note
 
 Call `destroy()` when the activity is destroyed
 
-```
+```java
 @Override
 protected void onDestroy() {
     AdsTracking.getInstance().destroy();
