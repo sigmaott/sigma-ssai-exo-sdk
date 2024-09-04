@@ -1,10 +1,10 @@
-# sigma-ssai-exo-sdk
+# Sigma DAI exo ssai plugin
 
-## Requiremen
+### Requiremen
 
 minSdk 21
 
-## Import SDK
+### Import SDK
 
 In rootProject/build.gradle add:
 
@@ -18,53 +18,59 @@ maven {
 
 In rootProject/app/build.gradle add:
 
-````java
-implementation 'com.sigma.ssai:sigma-ssai-exo:1.0.0'
-````
+```java
+    // install core media3 to demo
+    implementation 'androidx.media3:media3-exoplayer:1.1.0'
+    implementation 'androidx.media3:media3-ui:1.1.0'
 
-## Example
+    //install sdk
+    implementation 'com.sigma.ssai:sigma-ssai-media3:1.0.1'
+```
 
-### Step 1:Initialize SDK
+### Example
+
+##### Step 1:Initialize SDK
 
 init sdk in onCreate of Activity
 
 ```java
- AdsTracking.getInstance().init(
-                        mainActivity,
+    AdsTracking.getInstance().init(
+                        context,
                         playerView,
                         SESSION_URL,
                         new ResponseInitListener() {
                             @Override
                             public void onInitSuccess(String url) {
-                                configPlayer();
+                                configPlayer(url);
                             }
-                            @Override
-                            public void onInitFailed(String url, int code, String msg) {
-                                Log.d("onInitFailed:", + code + ':' + msg);
 
-                            }
+                            @Override
+                            public void onInitFailed(String url, int code, String msg) {}
                         });
 ```
 
+###### Note:
+
 SESSION_URL: link sesssion(to get link video and link tracking)
+
 playerView: player View
-mainActivity: current activity
+
+context: current context
 
 After initializing the session in the SDK, the SDK returns a SourceUrl --> configPlayer(url)
 
-#### Step 2: After init sdk, config Player (funtion configPlayer())
+##### Step 2: After init sdk, config Player (funtion configPlayer())
 
-call configPlayer after init exoplayer:
-        AdsTracking.getInstance().initPlayerView(exoPlayer);
+call configPlayer after init exoplayer: AdsTracking.getInstance().initPlayerView(exoPlayer);
 
-##### Note
+###### Note:
 
 Call `destroy()` when the activity is destroyed
 
 ```java
-@Override
-protected void onDestroy() {
-    AdsTracking.getInstance().destroy();
-    super.onDestroy();
-}
+    @Override
+    protected void onDestroy() {
+        AdsTracking.getInstance().destroy();
+        super.onDestroy();
+    }
 ```
