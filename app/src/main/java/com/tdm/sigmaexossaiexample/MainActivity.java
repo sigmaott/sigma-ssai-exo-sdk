@@ -20,7 +20,7 @@ import com.tdm.adstracking.FullLog;
 import com.tdm.adstracking.core.listener.ResponseInitListener;
 
 public class MainActivity extends AppCompatActivity implements Player.Listener {
-    ExoPlayer exoPlayer;
+    Player player;
     PlayerView playerView;
     // PlayerView playerView;
     public String SESSION_URL =
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements Player.Listener {
     }
 
     private void configPlayer(String url) {
-        exoPlayer = new ExoPlayer.Builder(this)
+      player = new ExoPlayer.Builder(this)
                 .setMediaSourceFactory(new DefaultMediaSourceFactory(this).setLiveTargetOffsetMs(5000))
                 .build();
         MediaItem mediaItem =
@@ -68,12 +68,12 @@ public class MainActivity extends AppCompatActivity implements Player.Listener {
                         .setUri(url)
                         .setLiveConfiguration(new MediaItem.LiveConfiguration.Builder().build())
                         .build();
-        exoPlayer.setMediaItem(mediaItem);
-        exoPlayer.prepare();
-        exoPlayer.setPlayWhenReady(false);
-        playerView.setPlayer(exoPlayer);
+        player.setMediaItem(mediaItem);
+        player.prepare();
+        player.setPlayWhenReady(false);
+        playerView.setPlayer(player);
 
-        AdsTracking.getInstance().initPlayerView(exoPlayer);
+        AdsTracking.getInstance().initPlayer(player);
     }
 
     @SuppressLint("SetTextI18n")
