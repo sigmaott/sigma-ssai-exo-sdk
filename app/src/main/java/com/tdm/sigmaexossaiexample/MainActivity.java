@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements Player.Listener {
                             }
 
                             @Override
-                            public void onInitFailed(String url, int code, String msg) {}
+                            public void onInitFailed(String url, String msg) {}
                         });
             }
         });

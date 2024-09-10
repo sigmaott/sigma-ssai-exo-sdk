@@ -24,7 +24,7 @@ In rootProject/app/build.gradle add:
     implementation 'androidx.media3:media3-ui:1.3.1'
 
     //install sdk
-    implementation 'com.sigma.ssai:sigma-ssai-media3:1.0.1'
+    implementation 'com.sigma.ssai:sigma-ssai-media3:1.0.3'
 ```
 
 ### Example
@@ -45,7 +45,7 @@ init sdk in onCreate of Activity
                             }
 
                             @Override
-                            public void onInitFailed(String url, int code, String msg) {}
+                            public void onInitFailed(String url, String msg) {}
                         });
 ```
 
