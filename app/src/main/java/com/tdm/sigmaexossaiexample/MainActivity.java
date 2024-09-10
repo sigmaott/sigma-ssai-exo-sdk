@@ -34,12 +34,11 @@ public class MainActivity extends AppCompatActivity implements Player.Listener {
         playerView = findViewById(R.id.player_view_id);
 
         Context context = this;
+
         playerView.post(new Runnable() {
             @Override
             public void run() {
                 // Lấy width và height của view player sau khi playerView đã được layout
-                int width = playerView.getWidth();
-                int height = playerView.getHeight();
 
                 // In ra kích thước
                 AdsTracking.getInstance().init(
