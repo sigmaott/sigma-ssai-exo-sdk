@@ -20,11 +20,11 @@ In rootProject/app/build.gradle add:
 
 ```java
     // install core media3 to demo
-    implementation 'androidx.media3:media3-exoplayer:1.1.0'
-    implementation 'androidx.media3:media3-ui:1.1.0'
+    implementation 'androidx.media3:media3-exoplayer:1.3.1'
+    implementation 'androidx.media3:media3-ui:1.3.1'
 
     //install sdk
-    implementation 'com.sigma.ssai:sigma-ssai-media3:1.0.1'
+    implementation 'com.sigma.ssai:sigma-ssai-media3:1.0.3'
 ```
 
 ### Example
@@ -45,7 +45,7 @@ init sdk in onCreate of Activity
                             }
 
                             @Override
-                            public void onInitFailed(String url, int code, String msg) {}
+                            public void onInitFailed(String url, String msg) {}
                         });
 ```
 
@@ -61,7 +61,7 @@ After initializing the session in the SDK, the SDK returns a SourceUrl --> confi
 
 ##### Step 2: After init sdk, config Player (funtion configPlayer())
 
-call configPlayer after init exoplayer: AdsTracking.getInstance().initPlayerView(exoPlayer);
+call configPlayer after init exoplayer: AdsTracking.getInstance().initPlayer(player);
 
 ###### Note:
 
