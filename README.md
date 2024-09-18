@@ -24,7 +24,7 @@ In rootProject/app/build.gradle add:
     implementation 'androidx.media3:media3-ui:1.3.1'
 
     //install sdk
-    implementation 'com.sigma.ssai:sigma-ssai-media3:1.0.4'
+    implementation 'com.sigma.ssai:sigma-ssai-media3:1.0.6'
 ```
 
 ### Example
