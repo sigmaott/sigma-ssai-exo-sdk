@@ -90,7 +90,7 @@ AdsTracking.getInstance().startServer();
 
 ```swift
 AdsTracking.getInstance().init(
-        context, 
+        this, 
         playerView, 
         sourceUrl,
         adsUrl,
@@ -109,7 +109,7 @@ AdsTracking.getInstance().init(
 
 ### Parameter Definitions
 
-* `context `: context reference to the current Activity.
+* `this `: reference to the current Activity.
 * `playerView `: The view where the video player will be displayed.
 * `sourceUrl `: string url source for the main content.
 * `adsUrl `: string url source for the ads.
