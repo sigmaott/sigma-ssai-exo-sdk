@@ -109,7 +109,7 @@ AdsTracking.getInstance().init(
 
 ### Parameter Definitions
 
-* `context `: A reference to the current instance of your class, which must conform to the `SigmaSSAIInterface` protocol to handle callbacks.
+* `context `: context reference to the current Activity.
 * `playerView `: The view where the video player will be displayed.
 * `sourceUrl `: string url source for the main content.
 * `adsUrl `: string url source for the ads.
@@ -131,6 +131,7 @@ ExoPlayer player;
 PlayerView playerView;
 
 ...
+
 player = new Player.Builder(this).build();
 playerView.setPlayer(player);
 MediaItem mediaItem = MediaItem.fromUri(Uri.parse(modifiUrl));
