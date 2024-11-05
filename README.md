@@ -1,30 +1,47 @@
-# Sigma DAI Exo SSAI Plugin
+# SSAITracking SDK Integration Guide
 
-**Organization**:  Thủ Đô Multimedia
+ **Version** : 1.0.0
+
+**Organization** : Thủ Đô Multimedia
 
 ## Table of Contents
 
-1. **Introduction**
-2. **Requirements**
-3. **Installation**
-4. **Usage**
+1. Introduction
+2. Scope
+3. System Requirements
+4. Requirements
+5. Installation
+6. Usage
+   - SDK Initialization
+   - Listening for ResponseInitListener
+   - Prepare and Play the Media Source
+   - Clean Up Resources
+7. Conclusion
 
-## Introduction
+## 1. Introduction
 
 This document provides a guide for integrating and using the SSAITracking SDK for Android applications, specifically using Media3. It includes detailed information on installation, SDK initialization, and handling necessary callbacks.
 
-## Requirements
+## 2. Scope
+
+This document applies to iOS developers who want to integrate the SSAITracking SDK into their applications, including requesting IDFA access as per App Tracking Transparency requirements.
+
+## 3. System Requirements
+
+* **Operating System** : Android 5.0 and above
+* **Device** : Physical device required
+
+## 4. Requirements
 
 - **Minimum SDK**: 21
 - **Player Library**: Media3
 
-## Installation
+## 5. Installation
 
-### Step 1: Add Repository
+1. **Add Repository Sigma** :
+   In your `rootProject/build.gradle` file, add the following repositories:
 
-In your **rootProject/build.gradle** file, add the following repositories:
-
-```groovy
+```swift
 allprojects {
     repositories {
         google()
@@ -36,23 +53,12 @@ allprojects {
 }
 ```
 
-### Step 2: Add Dependencies
+2. **Add Library Media3 player (skip if you're already using a different media3 version)**:
+   In your **app/build.gradle** file, include the following dependencies:
+3. **Add Sigma SSAI plugin** :
+   In your **app/build.gradle** file, include the following dependencies:
 
-In your **app/build.gradle** file, include the following dependencies:
-Add the Media3 core dependencies (skip if you're already using a different media3 version) using
-
-```groovy
-dependencies {
-    ...
-    implementation 'androidx.media3:media3-exoplayer:1.4.1'
-    implementation 'androidx.media3:media3-exoplayer-hls:1.4.1'
-    implementation 'androidx.media3:media3-ui:1.4.1'
-    ...}
-```
-
-Add Sigma SSAI plugin
-
-```groovy
+```swift
 dependencies {
     ...
     implementation 'com.sigma.ssai:sigma-ssai-media3-cspm:1.0.0'
@@ -60,26 +66,34 @@ dependencies {
 }
 ```
 
-## Usage
+## 6. Usage
 
-### Step 1: Start Local Server Tracking
+### 6.1 SDK Initialization
 
-To set up local server tracking when the application starts, add the following initialization call in your main Application class or activity's onCreate method:
+* **Import the SDK** :
 
-```groovy
+```swift
+import com.tdm.adstracking.AdsTracking;
+```
+
+* **Call the start function when your application launches** :
+
+```swift
 AdsTracking.getInstance().startServer();
 ```
 
-### Step 2: Initialize Configuration Before Player Starts
+```
 
-Before starting the player, initialize the ad tracking configuration using the AdsTracking instance. The configuration requires a context, the player view, and both the content URL and ads URL.
+```
 
-```groovy
+* **Initialize the SDK with the required parameters** :
+
+```swift
 AdsTracking.getInstance().init(
         context, 
         playerView, 
-        source,
-        ads,
+        sourceUrl,
+        adsUrl,
         new ResponseInitListener() {
             @Override
             public void onInitFailed(String url, String msg) {
@@ -93,19 +107,30 @@ AdsTracking.getInstance().init(
 );
 ```
 
-- **context**: current context
-- **playerView**:  current player view
-- **source**: string URL source for the main content
-- **ads**: string URL source for the ads
-- **onInitSuccess**: Called when initialization succeeds; returns modified source for ads tracking
-- **onInitFailed**: Called when initialization fails; returns original source URL
+### Parameter Definitions
 
-### Step 3: Prepare and Play the Media Source
+* `context `: A reference to the current instance of your class, which must conform to the `SigmaSSAIInterface` protocol to handle callbacks.
+* `playerView `: The view where the video player will be displayed.
+* `sourceUrl `: string url source for the main content.
+* `adsUrl `: string url source for the ads.
 
-Use the modifi source returned by the onInitSuccess(or originalsource returned by the onInitFailed) callback to initialize and play the media. Here's an example using Media3:
+### 6.2 Listening for ResponseInitListener
 
-```groovy
-// Create an Player instance
+* **Success Callback** :
+  Called `onInitSuccess` when initialization succeeds; returns modified source for tracking
+* **Failure Callback** :
+  Called `onInitFailed` when initialization fails; returns original source url.
+
+### 6.3 Prepare and Play the Media Source
+
+Use the modifi source returned by the `onInitSuccess`(or originalsource returned by the `onInitFailed`) callback to initialize and play the media. Here's an example using Media3:
+
+```swift
+ 
+ExoPlayer player;
+PlayerView playerView;
+
+...
 player = new Player.Builder(this).build();
 playerView.setPlayer(player);
 MediaItem mediaItem = MediaItem.fromUri(Uri.parse(modifiUrl));
@@ -114,9 +139,9 @@ player.prepare();
 player.setPlayWhenReady(true);
 ```
 
-### Step 4: Clean Up Resources
+### 6.4 Clean Up Resources
 
-To prevent memory leaks, call the destroy() method when the activity or player is destroyed. This ensures that the ad tracking resources are cleaned up properly.
+To prevent memory leaks, call the `destroy() `method when the activity or player is destroyed. This ensures that the ad tracking resources are cleaned up properly.
 
 ```groovy
 @Override
@@ -125,3 +150,7 @@ protected void onDestroy() {
     super.onDestroy();
 }
 ```
+
+## 7. Conclusion
+
+By following the steps outlined above, you can successfully integrate and utilize the SSAITracking SDK within your application. Ensure that you handle both success and failure callbacks to provide a seamless user experience.
