@@ -1,76 +1,123 @@
-# Sigma DAI exo ssai plugin
+# Sigma DAI Exo SSAI Plugin
+**Organization**:  Thủ Đô Multimedia
 
-### Requiremen
 
-minSdk 21
+## Table of Contents
+1. **Introduction**
+2. **Requirements**
+3. **Installation**
+4. **Usage**
 
-### Import SDK
+## Introduction
 
-In rootProject/build.gradle add:
+This document provides a guide for integrating and using the SSAITracking SDK for Android applications, specifically using Media3. It includes detailed information on installation, SDK initialization, and handling necessary callbacks.
 
-```java
-google()
-mavenCentral()
-maven {
-    url "https://maven.sigma.video"
+
+
+## Requirements
+
+- **Minimum SDK**: 21
+- **Player Library**: Media3
+
+## Installation
+
+### Step 1: Add Repository
+
+In your **rootProject/build.gradle** file, add the following repositories:
+
+```groovy
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url "https://maven.sigma.video"
+        }
+    }
 }
 ```
 
-In rootProject/app/build.gradle add:
+### Step 2: Add Dependencies
 
-```java
-    // install core media3 to demo
-    implementation 'androidx.media3:media3-exoplayer:1.3.1'
-    implementation 'androidx.media3:media3-ui:1.3.1'
-
-    //install sdk
-    implementation 'com.sigma.ssai:sigma-ssai-media3:1.0.6'
+In your **app/build.gradle** file, include the following dependencies:
+Add the Media3 core dependencies (skip if you're already using a different media3 version) using
+```groovy
+dependencies {
+    ...
+    implementation 'androidx.media3:media3-exoplayer:1.4.1'
+    implementation 'androidx.media3:media3-exoplayer-hls:1.4.1'
+    implementation 'androidx.media3:media3-ui:1.4.1'
+    ...}
+```
+Add Sigma SSAI plugin
+```groovy
+dependencies {
+    ...
+    implementation 'com.sigma.ssai:sigma-ssai-media3-cspm:0.0.1'
+    ...
+}
 ```
 
-### Example
+## Usage
+### Step 1: Start Local Server Tracking
+To set up local server tracking when the application starts, add the following initialization call in your main Application class or activity's onCreate method:
 
-##### Step 1:Initialize SDK
-
-init sdk in onCreate of Activity
-
-```java
-    AdsTracking.getInstance().init(
-                        context,
-                        playerView,
-                        SESSION_URL,
-                        new ResponseInitListener() {
-                            @Override
-                            public void onInitSuccess(String url) {
-                                configPlayer(url);
-                            }
-
-                            @Override
-                            public void onInitFailed(String url, String msg) {}
-                        });
+```groovy
+AdsTracking.getInstance().startServer();
 ```
 
-###### Note:
+### Step 2: Initialize Configuration Before Player Starts
+Before starting the player, initialize the ad tracking configuration using the AdsTracking instance. The configuration requires a context, the player view, and both the content URL and ads URL.
 
-SESSION_URL: link sesssion(to get link video and link tracking)
 
-playerView: player View
-
-context: current context
-
-After initializing the session in the SDK, the SDK returns a SourceUrl --> configPlayer(url)
-
-##### Step 2: After init sdk, config Player (funtion configPlayer())
-
-call configPlayer after init exoplayer: AdsTracking.getInstance().initPlayer(player);
-
-###### Note:
-
-Call `destroy()` when the activity is destroyed
-
-```java
-    @Override
-    protected void onDestroy() {
-        AdsTracking.getInstance().destroy();
-        super.onDestroy();
-    }
+```groovy
+AdsTracking.getInstance().init(
+        context, 
+        playerView, 
+        source,
+        ads,
+        new ResponseInitListener() {
+            @Override
+            public void onInitFailed(String url, String msg) {
+                //logic here
+            }
+            @Override
+            public void onInitSuccess(String modifiUrl) {
+                 //logic here
+            }
+        }
+);
 ```
+- **context**: current context
+- **playerView**:  current player view
+- **source**: string URL source for the main content
+- **ads**: string URL source for the ads
+- **onInitSuccess**: Called when initialization succeeds; returns modified source for ads tracking
+- **onInitFailed**: Called when initialization fails; returns original source URL
+
+
+
+### Step 3: Prepare and Play the Media Source
+Use the modifi source returned by the onInitSuccess(or originalsource returned by the onInitFailed) callback to initialize and play the media. Here's an example using Media3:
+
+```groovy
+// Create an Player instance
+player = new Player.Builder(this).build();
+playerView.setPlayer(player);
+MediaItem mediaItem = MediaItem.fromUri(Uri.parse(modifiUrl));
+player.setMediaItem(mediaItem);
+player.prepare();
+player.setPlayWhenReady(true);
+```
+
+### Step 4: Clean Up Resources
+To prevent memory leaks, call the destroy() method when the activity or player is destroyed. This ensures that the ad tracking resources are cleaned up properly.
+
+```groovy
+@Override
+protected void onDestroy() {
+    AdsTracking.getInstance().destroy();
+    super.onDestroy();
+}
+```
+
