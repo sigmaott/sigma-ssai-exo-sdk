@@ -33,7 +33,8 @@ This document applies to iOS developers who want to integrate the SSAITracking S
 
 ## 4. Requirements
 
-- **Minimum SDK**: 21
+- **Android minimum SDK**: 24
+- **Android target SDK:** 34
 - **Player Library**: Media3
 
 ## 5. Installation
@@ -53,9 +54,23 @@ allprojects {
 }
 ```
 
-2. **Add Library Media3 player (skip if you're already using a different media3 version)**:
+2. **Allowed to use HTTP (unencrypted protocol) to communicate with the local server:**
+   In `rootProject/app/src/main/AndroidManifest.xml` add the following:
+
+   ```
+   <manifest ...>
+       <uses-permission android:name="android.permission.INTERNET" />
+       <application
+           ...
+           android:usesCleartextTraffic="true"
+           ...>
+           ...
+       </application>
+   </manifest>
+   ```
+3. **Add Library Media3 player (skip if you're already using a different media3 version)**:
    In your **app/build.gradle** file, include the following dependencies:
-3. **Add Sigma SSAI plugin** :
+4. **Add Sigma SSAI plugin** :
    In your **app/build.gradle** file, include the following dependencies:
 
 ```swift
@@ -82,10 +97,6 @@ import com.tdm.adstracking.AdsTracking;
 AdsTracking.getInstance().startServer();
 ```
 
-```
-
-```
-
 * **Initialize the SDK with the required parameters** :
 
 ```swift
@@ -93,7 +104,7 @@ AdsTracking.getInstance().init(
         this, 
         playerView, 
         sourceUrl,
-        adsUrl,
+        adsEndpoint,
         new ResponseInitListener() {
             @Override
             public void onInitFailed(String url, String msg) {
@@ -109,10 +120,10 @@ AdsTracking.getInstance().init(
 
 ### Parameter Definitions
 
-* `this `: reference to the current Activity.
+* `this `: Reference to the current Activity.
 * `playerView `: The view where the video player will be displayed.
-* `sourceUrl `: string url source for the main content.
-* `adsUrl `: string url source for the ads.
+* `sourceUrl `: String url source for the main content.
+* `adsEndpoint`: Your ads endpoint (it will be obtained from the detailed endpoint information page in the SSAI product).
 
 ### 6.2 Listening for ResponseInitListener
 
@@ -121,18 +132,29 @@ AdsTracking.getInstance().init(
 * **Failure Callback** :
   Called `onInitFailed` when initialization fails; returns original source url.
 
-### 6.3 Prepare and Play the Media Source
+### 6.3 Init Player to listen event in sdk
 
-Use the modifi source returned by the `onInitSuccess`(or originalsource returned by the `onInitFailed`) callback to initialize and play the media. Here's an example using Media3:
+Call `initPlayer()` and pass initialized player
+
+```
+ExoPlayer player;
+
+...
+
+player = new ExoPlayer.Builder(this).build();
+AdsTracking.getInstance().initPlayer(player);
+```
+
+### 6.3 Play the Media Source
+
+Use the modifi source returned by the `onInitSuccess`(or originalsource returned by the `onInitFailed`) callback to initialize and play the media.
+Here's an example using Media3:
 
 ```swift
- 
-ExoPlayer player;
 PlayerView playerView;
 
 ...
 
-player = new Player.Builder(this).build();
 playerView.setPlayer(player);
 MediaItem mediaItem = MediaItem.fromUri(Uri.parse(modifiUrl));
 player.setMediaItem(mediaItem);

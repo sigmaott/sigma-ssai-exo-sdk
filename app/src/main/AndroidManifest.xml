@@ -14,9 +14,7 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.SigmaExoSSAIExample"
         tools:targetApi="m">
-        <activity
-            android:name=".PlayActivity"
-            android:exported="false" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
