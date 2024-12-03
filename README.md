@@ -1,4 +1,3 @@
-0
 
 # SSAITracking SDK Integration Guide
 
@@ -8,17 +7,19 @@
 
 ## Table of Contents
 
-1. Introduction
-2. Scope
-3. System Requirements
-4. Requirements
-5. Installation
-6. Usage
-   - SDK Initialization
-   - Listening for ResponseInitListener
-   - Prepare and Play the Media Source
-   - Clean Up Resources
-7. Conclusion
+1. [Introduction](#1-introduction)
+2. [Scope](#2-scope)
+3. [System Requirements](#3-system-requirements)
+4. [App Requirements](#4-app-requirements)
+5. [Installation](#5-installation)
+6. [Usage](#6-usage)
+   - [SDK Initialization](#61-sdk-initialization)
+   - [Listening for ResponseInitListener](#62-listening-for-responseinitlistener)
+   - [Prepare and Play the Media Source](#63-prepare-and-play-the-media-source)
+   - [Clean Up Resources](#64-clean-up-resources)
+7. [Important Notes](#8-important-notes)
+8. [Conclusion](#8-conclusion)
+9. [References](#9-references)
 
 ## 1. Introduction
 
@@ -33,7 +34,7 @@ This document applies to iOS developers who want to integrate the SSAITracking S
 * **Operating System** : Android 5.0 and above
 * **Device** : Physical device required
 
-## 4. Requirements
+## 4. App Requirements
 
 - **Android minimum SDK**: 24
 - **Android target SDK:** 34
@@ -117,7 +118,6 @@ AdsTracking.getInstance().init(
             }
         }
 );
-
 ```
 
 ### Parameter Definitions
@@ -175,6 +175,14 @@ protected void onDestroy() {
 }
 ```
 
-## 7. Conclusion
+## 7. Important Notes
+
+Always remember to call `setPlayer()` on the SDK after initializing the ExoPlayer or replacing the current item. This ensures that the SDK correctly recognizes the active video player and can effectively manage ad tracking. If you need to change the `adsEndpoint` or `adsParams`, it is essential to reinitialize the SDK. This ensures that the new endpoint and new params is properly configured and used for tracking.
+
+## 8. Conclusion
 
 By following the steps outlined above, you can successfully integrate and utilize the SSAITracking SDK within your application. Ensure that you handle both success and failure callbacks to provide a seamless user experience.
+
+## 9. References
+
+SSAITracking demo link: [`<u>`Demo `</u>`](https://github.com/sigmaott/sigma-ssai-exo-sdk)
