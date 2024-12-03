@@ -1,11 +1,17 @@
 package com.tdm.sigmaexossaiexample;
 
 
+import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.media3.common.MediaItem;
+import androidx.media3.common.Metadata;
 import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
+import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.extractor.metadata.id3.Id3Frame;
+import androidx.media3.extractor.metadata.id3.TextInformationFrame;
 import androidx.media3.ui.PlayerView;
 
 import android.annotation.SuppressLint;
@@ -23,23 +29,29 @@ import android.widget.Toast;
 import com.tdm.adstracking.AdsTracking;
 import com.tdm.adstracking.FullLog;
 import com.tdm.adstracking.core.listener.ResponseInitListener;
+import com.tdm.adstracking.define.LogLevel;
 
 public class MainActivity extends AppCompatActivity implements Player.Listener {
     private final String TAG = "MainActivity";
     ExoPlayer player;
     PlayerView playerView;
-    public String sourceUrl = "https://cdn-lrm-test.sigma.video/manifest/origin04/scte35-av4s-clear/master.m3u8";
-    private String adsEndpoint = "68cc9206-2d25-4de6-b2a9-116369a86e94";
+    public String sourceUrl = "https://cdn-lrm-test.sigma.video/manifest/origin04/scte35-av4s-clear/master.m3u8?sigma.dai.adsEndpoint=91384082-452f-4d81-997a-21fdb08974a2";
+    private String adsEndpoint = "";
     EditText editTextSource = null;
     EditText editTextAdsEndpoint = null;
     Button reloadButton = null;
+    Button enableLogLevelBtn = null;
+    boolean enableLogLevel = true;
     private Context mainContext = null;
     Player.Listener playerListener = null;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        AdsTracking.getInstance().setLogLevel(LogLevel.DEBUG);
+        if(enableLogLevel) {
+            AdsTracking.getInstance().setLogLevel(LogLevel.DEBUG);
+        }
         AdsTracking.getInstance().startServer();
 
         mainContext = this;
@@ -49,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements Player.Listener {
         editTextSource = findViewById(R.id.source_hls);
         editTextAdsEndpoint = findViewById(R.id.ads_endpoint);
         reloadButton = findViewById(R.id.reload_player);
+        enableLogLevelBtn = findViewById(R.id.enable_log);
 
         editTextSource.setText(sourceUrl);
         editTextAdsEndpoint.setText(adsEndpoint);
@@ -65,11 +78,24 @@ public class MainActivity extends AppCompatActivity implements Player.Listener {
         playerView.post(new Runnable() {
             @Override
             public void run() {
-
                 initAdsTracking();
-
             }
         });
+        enableLogLevelBtn.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        enableLogLevel = !enableLogLevel;
+                        if (enableLogLevel) {
+                            enableLogLevelBtn.setText("To Disable Log Level");
+                            AdsTracking.getInstance().setLogLevel(LogLevel.DEBUG);
+                        } else {
+                            enableLogLevelBtn.setText("To Enable Log Level");
+                            AdsTracking.getInstance().setLogLevel(LogLevel.NONE);
+                        }
+                    }
+                }
+        );
 
     }
 
@@ -78,7 +104,6 @@ public class MainActivity extends AppCompatActivity implements Player.Listener {
                 this,
                 playerView,
                 sourceUrl,
-                adsEndpoint,
                 new ResponseInitListener() {
                     @Override
                     public void onInitSuccess(String url) {
@@ -145,5 +170,6 @@ public class MainActivity extends AppCompatActivity implements Player.Listener {
         player.removeListener(playerListener);
         super.onDestroy();
     }
+
 
 }

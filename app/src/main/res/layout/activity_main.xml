@@ -75,6 +75,14 @@
             android:layout_gravity="top|start"
             android:layout_marginTop="150dp"
             android:text="Update and reload" />
+
+        <Button
+            android:id="@+id/enable_log"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|start"
+            android:layout_marginTop="230dp"
+            android:text="To Disable Log Level" />
     </androidx.media3.ui.PlayerView>
 
 
