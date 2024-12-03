@@ -42,47 +42,14 @@
                 android:textColor="#000000" />
         </FrameLayout>
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="70dp">
-
-            <TextView
-                android:id="@+id/text_time_play"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top|start"
-                android:layout_marginTop="0dp"
-                android:text="Ads endpoint: "
-                android:textColor="#FFFFFF"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/ads_endpoint"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:hint="Enter ads endpoint"
-                android:inputType="text"
-                android:background="#FFDDDD"
-                android:textColor="#000000" />
-        </FrameLayout>
-
         <Button
             android:id="@+id/reload_player"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_gravity="top|start"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="100dp"
             android:text="Update and reload" />
 
-        <Button
-            android:id="@+id/enable_log"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|start"
-            android:layout_marginTop="230dp"
-            android:text="To Disable Log Level" />
     </androidx.media3.ui.PlayerView>
 
 

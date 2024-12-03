@@ -36,22 +36,14 @@ public class MainActivity extends AppCompatActivity implements Player.Listener {
     ExoPlayer player;
     PlayerView playerView;
     public String sourceUrl = "https://cdn-lrm-test.sigma.video/manifest/origin04/scte35-av4s-clear/master.m3u8?sigma.dai.adsEndpoint=91384082-452f-4d81-997a-21fdb08974a2";
-    private String adsEndpoint = "";
     EditText editTextSource = null;
-    EditText editTextAdsEndpoint = null;
     Button reloadButton = null;
-    Button enableLogLevelBtn = null;
-    boolean enableLogLevel = true;
     private Context mainContext = null;
     Player.Listener playerListener = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        AdsTracking.getInstance().setLogLevel(LogLevel.DEBUG);
-        if(enableLogLevel) {
-            AdsTracking.getInstance().setLogLevel(LogLevel.DEBUG);
-        }
         AdsTracking.getInstance().startServer();
 
         mainContext = this;
@@ -59,12 +51,9 @@ public class MainActivity extends AppCompatActivity implements Player.Listener {
         setContentView(R.layout.activity_main);
         playerView = findViewById(R.id.player_view_id);
         editTextSource = findViewById(R.id.source_hls);
-        editTextAdsEndpoint = findViewById(R.id.ads_endpoint);
         reloadButton = findViewById(R.id.reload_player);
-        enableLogLevelBtn = findViewById(R.id.enable_log);
 
         editTextSource.setText(sourceUrl);
-        editTextAdsEndpoint.setText(adsEndpoint);
 
         // Initialize the ProgressDialogManager to fake loading
         ProgressDialogManager.getInstance().init(this);
@@ -81,22 +70,6 @@ public class MainActivity extends AppCompatActivity implements Player.Listener {
                 initAdsTracking();
             }
         });
-        enableLogLevelBtn.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        enableLogLevel = !enableLogLevel;
-                        if (enableLogLevel) {
-                            enableLogLevelBtn.setText("To Disable Log Level");
-                            AdsTracking.getInstance().setLogLevel(LogLevel.DEBUG);
-                        } else {
-                            enableLogLevelBtn.setText("To Enable Log Level");
-                            AdsTracking.getInstance().setLogLevel(LogLevel.NONE);
-                        }
-                    }
-                }
-        );
-
     }
 
     private void initAdsTracking() {
@@ -151,7 +124,6 @@ public class MainActivity extends AppCompatActivity implements Player.Listener {
         ProgressDialogManager.getInstance().showLoading();
 
         sourceUrl = editTextSource.getText().toString();
-        adsEndpoint = editTextAdsEndpoint.getText().toString();
 
         player.stop();
         player.release();

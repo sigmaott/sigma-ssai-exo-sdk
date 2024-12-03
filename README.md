@@ -77,7 +77,7 @@ allprojects {
 ```swift
 dependencies {
     ...
-    implementation 'com.sigma.ssai:sigma-ssai-media3-cspm:1.0.1'
+    implementation 'com.sigma.ssai:sigma-ssai-media3-cspm:1.0.2'
     ...
 }
 ```
@@ -117,26 +117,6 @@ AdsTracking.getInstance().init(
         }
 );
 
-OR
-
-// Use if you want to override the adsEndpoint string and adsParams string in the sourceUrl query
-AdsTracking.getInstance().init(
-        this, 
-        playerView, 
-        sourceUrl,
-	adsEndpoint,
-	adsParams,
-        new ResponseInitListener() {
-            @Override
-            public void onInitFailed(String url, String msg) {
-                //generate source failed
-            }
-            @Override
-            public void onInitSuccess(String modifiUrl) {
-                 //generate source success
-            }
-        }
-);
 ```
 
 ### Parameter Definitions
@@ -144,8 +124,6 @@ AdsTracking.getInstance().init(
 * `this `: Reference to the current Activity.
 * `playerView `: The view where the video player will be displayed.
 * `sourceUrl `: String url source for the main content.
-* `adsEndpoint`: Your ads endpoint, it will be obtained from the detailed endpoint information page in the SSAI product. If a non empty string is passed, it will override query sigma.dai.adsEndpoint in sourceUrl
-* `adsParams`: String ads params. If a non empty string is passed, it will override query sigma.dai.adsParams in sourceUrl  (ex: ?userId=123&type=string)
 
 ### 6.2 Listening for ResponseInitListener
 
