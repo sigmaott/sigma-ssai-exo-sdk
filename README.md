@@ -185,4 +185,4 @@ By following the steps outlined above, you can successfully integrate and utiliz
 
 ## 9. References
 
-SSAITracking demo link: [`<u>`Demo `</u>`](https://github.com/sigmaott/sigma-ssai-exo-sdk)
+SSAITracking demo link: [Demo](https://github.com/sigmaott/sigma-ssai-exo-sdk)
