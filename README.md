@@ -1,3 +1,4 @@
+
 # SSAITracking SDK Integration Guide
 
  **Version** : 1.0.0
@@ -76,7 +77,7 @@ allprojects {
 ```swift
 dependencies {
     ...
-    implementation 'com.sigma.ssai:sigma-ssai-media3-cspm:1.0.0'
+    implementation 'com.sigma.ssai:sigma-ssai-media3-cspm:1.0.2'
     ...
 }
 ```
@@ -104,18 +105,18 @@ AdsTracking.getInstance().init(
         this, 
         playerView, 
         sourceUrl,
-        adsEndpoint,
         new ResponseInitListener() {
             @Override
             public void onInitFailed(String url, String msg) {
-                //logic here
+                //generate source failed
             }
             @Override
             public void onInitSuccess(String modifiUrl) {
-                 //logic here
+                 //generate source success
             }
         }
 );
+
 ```
 
 ### Parameter Definitions
@@ -123,7 +124,6 @@ AdsTracking.getInstance().init(
 * `this `: Reference to the current Activity.
 * `playerView `: The view where the video player will be displayed.
 * `sourceUrl `: String url source for the main content.
-* `adsEndpoint`: Your ads endpoint (it will be obtained from the detailed endpoint information page in the SSAI product).
 
 ### 6.2 Listening for ResponseInitListener
 
