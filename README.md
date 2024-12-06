@@ -134,9 +134,8 @@ AdsTracking.getInstance().init(
 
 ### 6.3 Init Player to listen event in sdk
 
-Call `initPlayer()` and pass initialized player
-
-* **Important note when initPlayer:**
+* **Call `initPlayer()` and pass initialized player**
+  **Important note:**
   The Player passed to the AdsTracking.getInstance().initPlayer(player) function must always be a direct instance of ExoPlayer. Avoid using instances created through MediaController or any other wrapping mechanism, to ensure AdsTracking works properly with events and player state.
 
 ```
@@ -147,7 +146,7 @@ Player player = new ExoPlayer.Builder(this).build();
 AdsTracking.getInstance().initPlayer(player);
 ```
 
-### 6.3 Play the Media Source
+* **Play the Media Source**
 
 Use the modifi source returned by the `onInitSuccess`(or originalsource returned by the `onInitFailed`) callback to initialize and play the media.
 Here's an example using Media3:
