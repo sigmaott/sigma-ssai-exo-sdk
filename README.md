@@ -1,7 +1,6 @@
-
 # SSAITracking SDK Integration Guide
 
- **Version** : 1.0.2
+ **Version** : 1.0.5
 
 **Organization** : Thủ Đô Multimedia
 
@@ -79,7 +78,7 @@ allprojects {
 ```swift
 dependencies {
     ...
-    implementation 'com.sigma.ssai:sigma-ssai-media3-cspm:1.0.2'
+    implementation 'com.sigma.ssai:sigma-ssai-media3-cspm:1.0.5'
     ...
 }
 ```
@@ -137,12 +136,14 @@ AdsTracking.getInstance().init(
 
 Call `initPlayer()` and pass initialized player
 
-```
-ExoPlayer player;
+* **Important note when initPlayer:**
+  The Player passed to the AdsTracking.getInstance().initPlayer(player) function must always be a direct instance of ExoPlayer. Avoid using instances created through MediaController or any other wrapping mechanism, to ensure AdsTracking works properly with events and player state.
 
+```
+import androidx.media3.common.Player;
 ...
 
-player = new ExoPlayer.Builder(this).build();
+Player player = new ExoPlayer.Builder(this).build();
 AdsTracking.getInstance().initPlayer(player);
 ```
 
