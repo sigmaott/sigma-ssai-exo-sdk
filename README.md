@@ -1,23 +1,24 @@
-
 # SSAITracking SDK Integration Guide
 
- **Version** : 1.0.0
+ **Version** : 1.0.5
 
 **Organization** : Thủ Đô Multimedia
 
 ## Table of Contents
 
-1. Introduction
-2. Scope
-3. System Requirements
-4. Requirements
-5. Installation
-6. Usage
-   - SDK Initialization
-   - Listening for ResponseInitListener
-   - Prepare and Play the Media Source
-   - Clean Up Resources
-7. Conclusion
+1. [Introduction](#1-introduction)
+2. [Scope](#2-scope)
+3. [System Requirements](#3-system-requirements)
+4. [App Requirements](#4-app-requirements)
+5. [Installation](#5-installation)
+6. [Usage](#6-usage)
+   - [SDK Initialization](#61-sdk-initialization)
+   - [Listening for ResponseInitListener](#62-listening-for-responseinitlistener)
+   - [Prepare and Play the Media Source](#63-prepare-and-play-the-media-source)
+   - [Clean Up Resources](#64-clean-up-resources)
+7. [Important Notes](#8-important-notes)
+8. [Conclusion](#8-conclusion)
+9. [References](#9-references)
 
 ## 1. Introduction
 
@@ -32,7 +33,7 @@ This document applies to iOS developers who want to integrate the SSAITracking S
 * **Operating System** : Android 5.0 and above
 * **Device** : Physical device required
 
-## 4. Requirements
+## 4. App Requirements
 
 - **Android minimum SDK**: 24
 - **Android target SDK:** 34
@@ -77,7 +78,7 @@ allprojects {
 ```swift
 dependencies {
     ...
-    implementation 'com.sigma.ssai:sigma-ssai-media3-cspm:1.0.2'
+    implementation 'com.sigma.ssai:sigma-ssai-media3-cspm:1.0.5'
     ...
 }
 ```
@@ -116,7 +117,6 @@ AdsTracking.getInstance().init(
             }
         }
 );
-
 ```
 
 ### Parameter Definitions
@@ -134,18 +134,19 @@ AdsTracking.getInstance().init(
 
 ### 6.3 Init Player to listen event in sdk
 
-Call `initPlayer()` and pass initialized player
+* **Call `initPlayer()` and pass initialized player**
+  **Important note:**
+  The Player passed to the AdsTracking.getInstance().initPlayer(player) function must always be a direct instance of ExoPlayer. Avoid using instances created through MediaController or any other wrapping mechanism, to ensure AdsTracking works properly with events and player state.
 
 ```
-ExoPlayer player;
-
+import androidx.media3.common.Player;
 ...
 
-player = new ExoPlayer.Builder(this).build();
+Player player = new ExoPlayer.Builder(this).build();
 AdsTracking.getInstance().initPlayer(player);
 ```
 
-### 6.3 Play the Media Source
+* **Play the Media Source**
 
 Use the modifi source returned by the `onInitSuccess`(or originalsource returned by the `onInitFailed`) callback to initialize and play the media.
 Here's an example using Media3:
@@ -174,6 +175,14 @@ protected void onDestroy() {
 }
 ```
 
-## 7. Conclusion
+## 7. Important Notes
+
+Always remember to call `setPlayer()` on the SDK after initializing the ExoPlayer or replacing the current item. This ensures that the SDK correctly recognizes the active video player and can effectively manage ad tracking. If you need to change the `adsEndpoint` or `adsParams`, it is essential to reinitialize the SDK. This ensures that the new endpoint and new params is properly configured and used for tracking.
+
+## 8. Conclusion
 
 By following the steps outlined above, you can successfully integrate and utilize the SSAITracking SDK within your application. Ensure that you handle both success and failure callbacks to provide a seamless user experience.
+
+## 9. References
+
+SSAITracking demo link: [Demo](https://github.com/sigmaott/sigma-ssai-exo-sdk)
