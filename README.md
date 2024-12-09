@@ -1,6 +1,6 @@
 # SSAITracking SDK Integration Guide
 
- **Version** : 1.0.5
+ **Version** : 1.0.6
 
 **Organization** : Thủ Đô Multimedia
 
@@ -35,7 +35,7 @@ This document applies to iOS developers who want to integrate the SSAITracking S
 
 ## 4. App Requirements
 
-- **Android minimum SDK**: 24
+- **Android minimum SDK**: 21
 - **Android target SDK:** 34
 - **Player Library**: Media3
 
@@ -78,7 +78,7 @@ allprojects {
 ```swift
 dependencies {
     ...
-    implementation 'com.sigma.ssai:sigma-ssai-media3-cspm:1.0.5'
+    implementation 'com.sigma.ssai:sigma-ssai-media3-cspm:1.0.6'
     ...
 }
 ```
