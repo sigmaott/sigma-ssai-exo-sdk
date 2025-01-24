@@ -32,10 +32,10 @@ import com.tdm.adstracking.core.listener.ResponseInitListener;
 import com.tdm.adstracking.define.LogLevel;
 
 public class MainActivity extends AppCompatActivity implements Player.Listener {
-    private final String TAG = "MainActivity";
+    private final String TAG = "MainActivity=>>";
     ExoPlayer player;
     PlayerView playerView;
-    public String sourceUrl = "https://cdn-lrm-test.sigma.video/manifest/origin04/scte35-av4s-clear/master.m3u8?sigma.dai.adsEndpoint=91384082-452f-4d81-997a-21fdb08974a2";
+    public String sourceUrl = "https://cdn-lrm-test.sigma.video/manifest/origin04/scte35-av4s-clear/master.m3u8?sigma.dai.adsEndpoint=d7078543-b7b8-47d9-807c-b7429c05c81d";
     EditText editTextSource = null;
     Button reloadButton = null;
     private Context mainContext = null;
@@ -93,31 +93,31 @@ public class MainActivity extends AppCompatActivity implements Player.Listener {
     }
 
     private void configPlayer(String url) {
-        player = new ExoPlayer.Builder(this).build();
-        AdsTracking.getInstance().initPlayer(player);
-        playerView.setPlayer(player);
-        MediaItem mediaItem = MediaItem.fromUri(Uri.parse(url));
-        player.setMediaItem(mediaItem);
-        player.prepare();
-        player.setPlayWhenReady(true);
+            player = new ExoPlayer.Builder(this).build();
+            AdsTracking.getInstance().initPlayer(player);
+            playerView.setPlayer(player);
+            MediaItem mediaItem = MediaItem.fromUri(Uri.parse(url));
+            player.setMediaItem(mediaItem);
+            player.prepare();
+            player.setPlayWhenReady(true);
 
-        if (playerListener != null) {
-            player.removeListener(playerListener);
-        }
-
-        playerListener = new Player.Listener() {
-            @Override
-            public void onPlaybackStateChanged(int playbackState) {
-                Log.d(TAG + "_onPlaybackStateChanged=>: ", String.valueOf(playbackState));
+            if (playerListener != null) {
+                player.removeListener(playerListener);
             }
 
-            @Override
-            public void onPlayerError(PlaybackException error) {
-                Log.e(TAG + "_onPlayerError=>: ", error.getMessage());
-                ProgressDialogManager.getInstance().hideLoading();
-            }
-        };
-        player.addListener(playerListener);
+            playerListener = new Player.Listener() {
+                @Override
+                public void onPlaybackStateChanged(int playbackState) {
+                    Log.d(TAG,"_onPlaybackStateChanged=>: " + String.valueOf(playbackState));
+                }
+
+                @Override
+                public void onPlayerError(PlaybackException error) {
+                    Log.e(TAG,"_onPlayerError=>: " + error.getMessage());
+                    ProgressDialogManager.getInstance().hideLoading();
+                }
+            };
+            player.addListener(playerListener);
     }
 
     private void handleReloadPlayer() {
