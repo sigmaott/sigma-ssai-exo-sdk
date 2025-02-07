@@ -1,6 +1,6 @@
 # SSAITracking SDK Integration Guide
 
- **Version** : 1.0.10
+ **Version** : 1.0.11
 
 **Organization** : Thủ Đô Multimedia
 
@@ -78,7 +78,7 @@ allprojects {
 ```swift
 dependencies {
     ...
-    implementation 'com.sigma.ssai:sigma-ssai-media3-cspm:1.0.10'
+    implementation 'com.sigma.ssai:sigma-ssai-media3-cspm:1.0.11'
     ...
 }
 ```
