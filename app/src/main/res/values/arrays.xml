@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <!-- Stream source display names -->
+    <string-array name="stream_sources">
+        <item>HLS 2s Segments</item>
+        <item>HLS 4s Segments</item>
+        <item>HLS 6s Segments</item>
+        <item>HLS Master Split</item>
+        <item>DASH 2s Segments</item>
+        <item>DASH 4s Segments</item>
+        <item>DASH 6s Segments</item>
+        <item>DASH Drm</item>
+    </string-array>
+    
+    <!-- Stream source URLs -->
+    <string-array name="stream_urls">
+        <item>https://stream-cdn.sigmadrm.com/manifest/channel-test/masterhls-ts-2s.m3u8</item>
+        <item>https://stream-cdn.sigmadrm.com/manifest/channel-test/masterhls-ts-4s.m3u8</item>
+        <item>https://stream-cdn.sigmadrm.com/manifest/channel-test/masterhls-ts-6s.m3u8</item>
+        <item>https://stream-cdn.sigmadrm.com/manifest/channel-test/mastersplit-master.m3u8</item>
+        <item>https://stream-cdn.sigmadrm.com/manifest/channel-test/masterdash-ts-2s.mpd</item>
+        <item>https://stream-cdn.sigmadrm.com/manifest/channel-test/masterdash-ts-4s.mpd</item>
+        <item>https://stream-cdn.sigmadrm.com/manifest/channel-test/masterdash-ts-6s.mpd</item>
+        <item>https://stream-cdn.sigmadrm.com/manifest/channel-test/masterdash-drm.mpd</item>
+    </string-array>
+    
+    <!-- DRM License URLs (empty for non-DRM streams) -->
+    <string-array name="drm_license_urls">
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item>https://license.sigmadrm.com/license/verify/widevine?merchantId=sigma_packager_lite&amp;appId=demo&amp;userId=test&amp;sessionId=session</item>
+    </string-array>
+    
+</resources>

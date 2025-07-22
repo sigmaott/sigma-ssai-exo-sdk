@@ -22,38 +22,55 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.media3.common.C;
+
 import com.tdm.adstracking.AdsTracking;
-import com.tdm.adstracking.FullLog;
+import com.tdm.adstracking.core.SigmaError;
 import com.tdm.adstracking.core.listener.ResponseInitListener;
 import com.tdm.adstracking.define.LogLevel;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity implements Player.Listener {
     private final String TAG = "MainActivity=>>";
     ExoPlayer player;
     PlayerView playerView;
-    public String sourceUrl = "https://cdn-lrm-test.sigma.video/manifest/origin04/scte35-av4s-clear/master.m3u8?sigma.dai.adsEndpoint=d7078543-b7b8-47d9-807c-b7429c05c81d";
-    EditText editTextSource = null;
+    public String sourceUrl = "https://stream-cdn.sigmadrm.com/manifest/channel-test/masterhls-ts-4s.m3u8";
+    Spinner spinnerSource = null;
+    EditText editTextAdsEndpoint = null;
     Button reloadButton = null;
     private Context mainContext = null;
     Player.Listener playerListener = null;
+    private String[] streamUrls;
+    private String[] drmLicenseUrls;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AdsTracking.getInstance().startServer();
 
+        AdsTracking.getInstance().setManifestTimeout(300); // Set manifest timeout to 100ms for testing purposes
+//        AdsTracking.getInstance().setUseNonce(true);
+
         mainContext = this;
 
         setContentView(R.layout.activity_main);
         playerView = findViewById(R.id.player_view_id);
-        editTextSource = findViewById(R.id.source_hls);
+        spinnerSource = findViewById(R.id.source_hls);
+        editTextAdsEndpoint = findViewById(R.id.ads_endpoint);
         reloadButton = findViewById(R.id.reload_player);
 
-        editTextSource.setText(sourceUrl);
+        // Setup spinner with stream sources
+        setupSourceSpinner();
+        
+        editTextAdsEndpoint.setText("da914c58-5c6e-41b7-93b7-0597c4a983ee");
 
         // Initialize the ProgressDialogManager to fake loading
         ProgressDialogManager.getInstance().init(this);
@@ -72,7 +89,38 @@ public class MainActivity extends AppCompatActivity implements Player.Listener {
         });
     }
 
+    private void setupSourceSpinner() {
+        // Get arrays from resources
+        String[] streamSources = getResources().getStringArray(R.array.stream_sources);
+        streamUrls = getResources().getStringArray(R.array.stream_urls);
+        drmLicenseUrls = getResources().getStringArray(R.array.drm_license_urls);
+        
+        // Create adapter
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, streamSources);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        
+        // Set adapter to spinner
+        spinnerSource.setAdapter(adapter);
+        
+        // Set default selection (HLS 4s Segments)
+        spinnerSource.setSelection(1);
+    }
+
     private void initAdsTracking() {
+        // Get selected URL from spinner
+        int selectedPosition = spinnerSource.getSelectedItemPosition();
+        sourceUrl = streamUrls[selectedPosition];
+        
+        String adsEndpoint = editTextAdsEndpoint.getText().toString().trim();
+        
+        // Set ads endpoint
+        AdsTracking.getInstance().setAdsEndpoint(sourceUrl, adsEndpoint);
+
+        //if you want to set custom data
+        String customDataString = "{\"key1\": \"value1\"}";
+        AdsTracking.getInstance().setCustomData(sourceUrl, customDataString);
+
+
         AdsTracking.getInstance().init(
                 this,
                 playerView,
@@ -85,45 +133,63 @@ public class MainActivity extends AppCompatActivity implements Player.Listener {
                     }
 
                     @Override
-                    public void onInitFailed(String url, String msg) {
-                        Toast.makeText(mainContext, msg, Toast.LENGTH_SHORT).show();
+                    public void onInitFailed(String url, SigmaError sigmaError) {
+                        Toast.makeText(mainContext, sigmaError.getDescription(), Toast.LENGTH_SHORT).show();
                         ProgressDialogManager.getInstance().hideLoading();
                     }
                 });
     }
 
+    @OptIn(markerClass = UnstableApi.class)
     private void configPlayer(String url) {
-            player = new ExoPlayer.Builder(this).build();
-            AdsTracking.getInstance().initPlayer(player);
-            playerView.setPlayer(player);
-            MediaItem mediaItem = MediaItem.fromUri(Uri.parse(url));
-            player.setMediaItem(mediaItem);
-            player.prepare();
-            player.setPlayWhenReady(true);
+        // Get selected position to check if DRM is needed
+        int selectedPosition = spinnerSource.getSelectedItemPosition();
+        String licenseUrl = drmLicenseUrls[selectedPosition];
+        
+        // Build player normally
+        player = new ExoPlayer.Builder(this).build();
+        AdsTracking.getInstance().initPlayer(player);
+        playerView.setPlayer(player);
+        
+        MediaItem.Builder mediaItemBuilder = new MediaItem.Builder().setUri(Uri.parse(url));
+        
+        // Add DRM configuration to MediaItem if needed
+        if (!licenseUrl.isEmpty()) {
+            MediaItem.DrmConfiguration drmConfiguration = new MediaItem.DrmConfiguration.Builder(C.WIDEVINE_UUID)
+                    .setLicenseUri(licenseUrl)
+                    .build();
+            mediaItemBuilder.setDrmConfiguration(drmConfiguration);
+            Log.d(TAG, "DRM Configuration added to MediaItem with license: " + licenseUrl);
+        }
+        
+        MediaItem mediaItem = mediaItemBuilder.build();
+        player.setMediaItem(mediaItem);
+        player.prepare();
+        player.setPlayWhenReady(true);
 
-            if (playerListener != null) {
-                player.removeListener(playerListener);
+        if (playerListener != null) {
+            player.removeListener(playerListener);
+        }
+
+        playerListener = new Player.Listener() {
+            @Override
+            public void onPlaybackStateChanged(int playbackState) {
+                Log.d(TAG,"_onPlaybackStateChanged=>: " + String.valueOf(playbackState));
             }
 
-            playerListener = new Player.Listener() {
-                @Override
-                public void onPlaybackStateChanged(int playbackState) {
-                    Log.d(TAG,"_onPlaybackStateChanged=>: " + String.valueOf(playbackState));
-                }
-
-                @Override
-                public void onPlayerError(PlaybackException error) {
-                    Log.e(TAG,"_onPlayerError=>: " + error.getMessage());
-                    ProgressDialogManager.getInstance().hideLoading();
-                }
-            };
-            player.addListener(playerListener);
+            @Override
+            public void onPlayerError(PlaybackException error) {
+                Log.e(TAG,"_onPlayerError=>: " + error.getMessage());
+                ProgressDialogManager.getInstance().hideLoading();
+            }
+        };
+        player.addListener(playerListener);
     }
 
     private void handleReloadPlayer() {
         ProgressDialogManager.getInstance().showLoading();
 
-        sourceUrl = editTextSource.getText().toString();
+        // URL will be updated in initAdsTracking from spinner selection
 
         player.stop();
         player.release();

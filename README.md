@@ -1,6 +1,6 @@
 # SSAITracking SDK Integration Guide
 
- **Version** : 1.0.18
+ **Version** : 1.1.0
 
 **Organization** : Thủ Đô Multimedia
 
@@ -16,7 +16,8 @@
    - [Listening for ResponseInitListener](#62-listening-for-responseinitlistener)
    - [Prepare and Play the Media Source](#63-prepare-and-play-the-media-source)
    - [Clean Up Resources](#64-clean-up-resources)
-7. [Important Notes](#8-important-notes)
+   - [Api support](#65-api-support)
+7. [Important Notes](#7-important-notes)
 8. [Conclusion](#8-conclusion)
 9. [References](#9-references)
 
@@ -78,7 +79,7 @@ allprojects {
 ```swift
 dependencies {
     ...
-    implementation 'com.sigma.ssai:sigma-ssai-media3-cspm:1.0.18'
+    implementation 'com.sigma.ssai:sigma-ssai-media3-cspm:1.1.0'
     ...
 }
 ```
@@ -108,7 +109,7 @@ AdsTracking.getInstance().init(
         sourceUrl,
         new ResponseInitListener() {
             @Override
-            public void onInitFailed(String url, String msg) {
+            public void onInitFailed(String url, SigmaError sigmaError) {
                 //generate source failed
             }
             @Override
@@ -130,7 +131,7 @@ AdsTracking.getInstance().init(
 * **Success Callback** :
   Called `onInitSuccess` when initialization succeeds; returns modified source for tracking
 * **Failure Callback** :
-  Called `onInitFailed` when initialization fails; returns original source url.
+Called `onInitFailed` when initialization fails; returns original source url and SigmaError object including an error code and description
 
 ### 6.3 Init Player to listen event in sdk
 
@@ -175,9 +176,52 @@ protected void onDestroy() {
 }
 ```
 
+### 6.5 Api Support
+
+* public void setManifestTimeout(int manifestTimeout)
+Description:
+Sets the timeout duration (in milliseconds) for manifest requests from the proxy to the origin server or CDN.
+This controls how long the proxy should wait for a response before considering the request as failed.
+Parameters:
+`manifestTimeout`: Timeout value in milliseconds.
+
+* public void setAdsEndpoint(String url, String adsEndpoint)
+Description:
+Configures the ad decisioning endpoint to be used when processing ad-related metadata requests for a specific stream.
+This allows dynamic routing of ad requests to the correct ad server per content stream.
+Parameters:
+`url`: The origin stream URL (e.g., HLS or DASH).
+`adsEndpoint`: The endpoint URL to be used for fetching ad metadata.
+Note: Call before calling init adsTracking
+
+* public void setCustomData(String url, String customDataJsonStr)
+Description:
+Configures custom ad parameters when sending an ad info request to the ad server.
+The data must be in JSON object format, where values can be of type string, number, or boolean.
+The configuration is applied to the specific request URL.
+Parameters:
+`url`: The origin manifest URL.
+`customDataJsonStr`: JSON-formatted string containing ad parameters.
+Note: Call before calling init adsTracking
+
+* public void generateUrl(String url, ResponseInitListener resInitListener)
+Description:
+Generates a fully processed URL with SSAI tracking and ad metadata embedded.
+This is typically called before initializing media playback to ensure all necessary ad tracking information is attached.
+The result is returned via a callback listener.
+Parameters:
+`url`: The origin stream URL.
+`resInitListener`: Callback listener that receives the final modified URL or error.
+
+* public void setUseNonce(boolean useNonce)
+Description:
+Whether to use nonce for google ads manager or not
+Parameters:
+`useNonce`: boolean options, default false
+
 ## 7. Important Notes
 
-Always remember to call `setPlayer()` on the SDK after initializing the ExoPlayer or replacing the current item. This ensures that the SDK correctly recognizes the active video player and can effectively manage ad tracking. If you need to change the `adsEndpoint` or `adsParams`, it is essential to reinitialize the SDK. This ensures that the new endpoint and new params is properly configured and used for tracking.
+Always remember to call `setPlayer()` on the SDK after initializing the ExoPlayer or replacing the current item. This ensures that the SDK correctly recognizes the active video player and can effectively manage ad tracking.
 
 ## 8. Conclusion
 
